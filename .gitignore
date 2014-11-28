@@ -1,1 +1,3 @@
 /docker-name.conf
+/dnsmasq/conf.d/*.conf
+/dnsmasq/reload

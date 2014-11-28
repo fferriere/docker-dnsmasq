@@ -4,4 +4,6 @@ MY_PATH=$(dirname $(realpath $0))
 
 . $MY_PATH/docker-name.conf
 
-docker run -ti $DOCKER_IMAGE_NAME "$@"
+SRC=$MY_PATH/dnsmasq
+
+docker run -v $SRC:/etc/dnsmasq $DOCKER_IMAGE_NAME "$@"
