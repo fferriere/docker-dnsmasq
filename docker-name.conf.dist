@@ -1,0 +1,2 @@
+DOCKER_IMAGE_NAME="label/name"
+DOCKER_CONTAINER_NAME="label-name"
