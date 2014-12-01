@@ -5,7 +5,6 @@ MY_PATH=$(dirname $(realpath $0))
 . $MY_PATH/docker-name.conf
 
 params="$(getopt -o fs: -l fg,src: --name "$O" -- $@)"
-echo $params
 eval set -- "$params"
 
 SRC=$MY_PATH/dnsmasq
@@ -33,7 +32,7 @@ done
 run()
 {
     docker run \
-        $DOCKER_ARGS
+        $DOCKER_ARGS \
         --name $DOCKER_CONTAINER_NAME \
         -v $SRC:/etc/dnsmasq \
         $DOCKER_IMAGE_NAME "$@"
