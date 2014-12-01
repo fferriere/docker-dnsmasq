@@ -31,6 +31,20 @@ done
 
 run()
 {
+    if [ ! -d $SRC ]; then
+        echo "$SRC is not a directory"
+        exit 1
+    fi
+    CONF_FILE="$SRC/resolv.dnsmasq.conf"
+    DIST_FILE=$CONF_FILE'.dist'
+    if [ ! -f $CONF_FILE ]; then
+        if [ -f $DIST_FILE ]; then
+            cp $DIST_FILE $CONF_FILE
+        else
+            echo "$CONF_FILE is missing"
+            exit 1
+        fi
+    fi
     docker run \
         $DOCKER_ARGS \
         --name $DOCKER_CONTAINER_NAME \
