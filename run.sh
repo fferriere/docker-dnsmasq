@@ -56,6 +56,19 @@ updateResolv()
     fi
 }
 
+reloadDnsmasq()
+{
+    if [ ! -d $SRC ]; then
+        echo "$SRC is not a directory"
+        exit 1
+    fi
+    if [ ! -w $SRC ]; then
+        echo "$SRC is not writable"
+        exit 1
+    fi
+    touch $SRC/reload
+}
+
 echoHelp()
 {
     echo "run.sh [CMD] [OPTIONS]"
@@ -69,6 +82,8 @@ echoHelp()
     echo "    [OPTIONS]:"
     echo "      -f | --fg   to run container on foreground (default is deamon run)"
     echo "      -s | --src  to give the dnsmasq folder link with /etc/dnsmasq on container"
+    echo "  reload  to reload the dnsmasq configuration"
+    echo "    you can use -s | --src option with this command as with run command"
 }
 
 case "$1" in
@@ -87,6 +102,9 @@ case "$1" in
         ;;
     resolv)
         updateResolv
+        ;;
+    reload)
+        reloadDnsmasq
         ;;
     help)
         echoHelp
