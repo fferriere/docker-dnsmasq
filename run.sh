@@ -56,6 +56,21 @@ updateResolv()
     fi
 }
 
+echoHelp()
+{
+    echo "run.sh [CMD] [OPTIONS]"
+    echo "CMD: "
+    echo "  stop    to stop container"
+    echo "  rm      to remove container"
+    echo "  stopRm  to stop and remove contaier"
+    echo "  resolv  to modify resolv.conf file with ip address of dnsmasq container"
+    echo "  help    to show this message"
+    echo "  run     to start the container"
+    echo "    [OPTIONS]:"
+    echo "      -f | --fg   to run container on foreground (default is deamon run)"
+    echo "      -s | --src  to give the dnsmasq folder link with /etc/dnsmasq on container"
+}
+
 case "$1" in
     run)
         run
@@ -72,5 +87,12 @@ case "$1" in
         ;;
     resolv)
         updateResolv
+        ;;
+    help)
+        echoHelp
+        ;;
+    *)
+        echo "Command not found"
+        echoHelp
         ;;
 esac   
