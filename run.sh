@@ -9,6 +9,7 @@ eval set -- "$params"
 
 SRC=$MY_PATH/dnsmasq
 DOCKER_ARGS='-d'
+CMD=''
 
 while true
 do
@@ -45,11 +46,23 @@ run()
             exit 1
         fi
     fi
-    docker run \
+    getCmd $1
+    eval $CMD
+}
+
+getCmd()
+{
+    CMD="docker run \
         $DOCKER_ARGS \
         --name $DOCKER_CONTAINER_NAME \
         -v $SRC:/etc/dnsmasq \
-        $DOCKER_IMAGE_NAME "$@"
+        $DOCKER_IMAGE_NAME $1"
+}
+
+dryRun()
+{
+    getCmd $1
+    echo $CMD
 }
 
 stopContainer()
@@ -89,20 +102,22 @@ echoHelp()
     echo "CMD: "
     echo "  stop    to stop container"
     echo "  rm      to remove container"
-    echo "  stopRm  to stop and remove contaier"
+    echo "  stop-rm  to stop and remove contaier"
     echo "  resolv  to modify resolv.conf file with ip address of dnsmasq container"
     echo "  help    to show this message"
     echo "  run     to start the container"
     echo "    [OPTIONS]:"
     echo "      -f | --fg   to run container on foreground (default is deamon run)"
     echo "      -s | --src  to give the dnsmasq folder link with /etc/dnsmasq on container"
+    echo "  dry-run generate the docker run command and show it"
     echo "  reload  to reload the dnsmasq configuration"
     echo "    you can use -s | --src option with this command as with run command"
 }
 
 case "$1" in
     run)
-        run
+        shift
+        run "$@"
         ;;
     stop)
         stopContainer
@@ -110,7 +125,7 @@ case "$1" in
     rm)
         removeContainer
         ;;
-    stopRm)
+    stop-rm)
         stopContainer
         removeContainer
         ;;
@@ -119,6 +134,10 @@ case "$1" in
         ;;
     reload)
         reloadDnsmasq
+        ;;
+    dry-run)
+        shift
+        dryRun "$@"
         ;;
     help)
         echoHelp
