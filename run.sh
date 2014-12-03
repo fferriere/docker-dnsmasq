@@ -4,12 +4,14 @@ MY_PATH=$(dirname $(realpath $0))
 
 . $MY_PATH/docker-name.conf
 
-params="$(getopt -o fs: -l fg,src: --name "$O" -- $@)"
+params="$(getopt -o lfs: -l fg,local,src: --name "$O" -- $@)"
 eval set -- "$params"
 
 SRC=$MY_PATH/dnsmasq
 DOCKER_ARGS='-d'
 CMD=''
+USE_LOCALHOST=false
+LOCAL_ADDR='127.0.0.1'
 
 while true
 do
@@ -21,6 +23,10 @@ do
         -s|--src)
             shift
             SRC="$1"
+            shift
+            ;;
+        -l|--local)
+            USE_LOCALHOST=true
             shift
             ;;
         --)
@@ -52,6 +58,9 @@ run()
 
 getCmd()
 {
+    if [ true == $USE_LOCALHOST ]; then
+        DOCKER_ARGS="$DOCKER_ARGS -p 53:53/udp"
+    fi
     CMD="docker run \
         $DOCKER_ARGS \
         --name $DOCKER_CONTAINER_NAME \
@@ -77,7 +86,11 @@ removeContainer()
 
 updateResolv()
 {
-    IP_ADDRESS=$(docker inspect -f "{{.NetworkSettings.IPAddress}}" $DOCKER_CONTAINER_NAME)
+    if [ true == $USE_LOCALHOST ]; then
+        IP_ADDRESS=$LOCAL_ADDR
+    else
+        IP_ADDRESS=$(docker inspect -f "{{.NetworkSettings.IPAddress}}" $DOCKER_CONTAINER_NAME)
+    fi
     if [ $? -eq 0 ]; then
         echo "nameserver $IP_ADDRESS" > /etc/resolv.conf
     fi
