@@ -15,7 +15,7 @@ while true
 do
     case "$1" in
         -f|--fg)
-            DOCKER_ARGS='-ti'
+            DOCKER_ARGS='-ti --rm'
             shift
             ;;
         -s|--src)
