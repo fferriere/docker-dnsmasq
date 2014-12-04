@@ -79,14 +79,25 @@ dryRun()
     echo $CMD
 }
 
+getNbContainer()
+{
+    nbContainer=$(docker ps -a | grep $DOCKER_CONTAINER_NAME | wc -l)
+}
+
 stopContainer()
 {
-    docker stop -t 0 $DOCKER_CONTAINER_NAME
+    getNbContainer
+    if [ "$nbContainer" -gt 0 ]; then
+        docker stop -t 0 $DOCKER_CONTAINER_NAME
+    fi
 }
 
 removeContainer()
 {
-    docker rm $DOCKER_CONTAINER_NAME
+    getNbContainer
+    if [ "$nbContainer" -gt 0 ]; then
+        docker rm $DOCKER_CONTAINER_NAME
+    fi
 }
 
 updateResolv()
