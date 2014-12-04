@@ -125,6 +125,19 @@ reloadDnsmasq()
     touch $SRC/reload
 }
 
+install()
+{
+    build
+    ln -nfs $MY_PATH/scripts/ /usr/local/bin/docker-dnsmasq
+    cp $MY_PATH/files/docker-dnsmasq.service.systemd /usr/lib/systemd/system/docker-dnsmasq.service
+}
+
+uninstall()
+{
+    rm /usr/lib/systemd/system/docker-dnsmasq.service
+    rm /usr/local/bin/docker-dnsmasq
+}
+
 echoHelp()
 {
     echo "run.sh [CMD] [OPTIONS]"
@@ -172,6 +185,12 @@ case "$1" in
     dry-run)
         shift
         dryRun "$@"
+        ;;
+    install)
+        install
+        ;;
+    uninstall)
+        uninstall
         ;;
     help)
         echoHelp
