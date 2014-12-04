@@ -36,6 +36,11 @@ do
     esac
 done
 
+build()
+{
+    docker build -t $DOCKER_IMAGE_NAME $1 $MY_PATH/.
+}
+
 run()
 {
     if [ ! -d $SRC ]; then
@@ -113,6 +118,7 @@ echoHelp()
 {
     echo "run.sh [CMD] [OPTIONS]"
     echo "CMD: "
+    echo "  build   to build container (you can use docker build options after --)"
     echo "  stop    to stop container"
     echo "  rm      to remove container"
     echo "  stop-rm  to stop and remove contaier"
@@ -128,6 +134,10 @@ echoHelp()
 }
 
 case "$1" in
+    build)
+        shift
+        build "$@"
+        ;;
     run)
         shift
         run "$@"

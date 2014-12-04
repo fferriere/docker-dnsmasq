@@ -13,7 +13,7 @@ Copy `docker-name.conf.dist` to `docker-name.conf`
 
 Edit `docker-name.conf`
 
-Run `build.sh` script to build container
+Run `dnsmasq.sh build` to build container
 
 You can edit dnsmasq config after run container. You do run `dnsmasq.sh reload` or `touch path_dnsmasq/reload` file. By default `path_dnsmasq` is `dnsmasq` folder of this project. You can change it with `-s|--src option` of `dnsmasq.sh`
 
