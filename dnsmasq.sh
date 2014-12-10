@@ -36,25 +36,43 @@ do
     esac
 done
 
+errEcho()
+{
+    >&2 echo "$@"
+}
+
 build()
 {
     docker build -t $DOCKER_IMAGE_NAME $1 $MY_PATH/.
 }
 
-run()
+checkDirExists()
 {
-    if [ ! -d $SRC ]; then
-        echo "$SRC is not a directory"
+    if [ ! -d $1 ]; then
+        errEcho "Source directory '$1' is not a good directory"
         exit 1
     fi
+}
+
+checkDirWritable()
+{
+    if [ ! -w $1 ]; then
+        errEcho "Source directory '$1' is not writable"
+        exit 2
+    fi
+}
+
+run()
+{
+    checkDirExists $SRC
     CONF_FILE="$SRC/resolv.dnsmasq.conf"
     DIST_FILE=$CONF_FILE'.dist'
     if [ ! -f $CONF_FILE ]; then
         if [ -f $DIST_FILE ]; then
             cp $DIST_FILE $CONF_FILE
         else
-            echo "$CONF_FILE is missing"
-            exit 1
+            errEcho "$CONF_FILE is missing"
+            exit 3
         fi
     fi
     getCmd $1
@@ -114,14 +132,8 @@ updateResolv()
 
 reloadDnsmasq()
 {
-    if [ ! -d $SRC ]; then
-        echo "$SRC is not a directory"
-        exit 1
-    fi
-    if [ ! -w $SRC ]; then
-        echo "$SRC is not writable"
-        exit 1
-    fi
+    checkDirExists $SRC
+    checkDirWritable $SRC
     touch $SRC/reload
 }
 
