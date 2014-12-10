@@ -1,2 +1,0 @@
-* * * * * root /usr/local/bin/dnsmasq.sh >> /var/log/cron.log 2>&1
-
