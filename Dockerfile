@@ -1,5 +1,7 @@
 FROM debian:wheezy
 
+MAINTAINER ferriere.florian@gmail.com 
+
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
