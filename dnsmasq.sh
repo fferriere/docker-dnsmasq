@@ -4,7 +4,7 @@ MY_PATH=$(dirname $(realpath $0))
 
 . $MY_PATH/docker-name.conf
 
-params="$(getopt -o lfs: -l fg,local,src: --name "$O" -- $@)"
+params="$(getopt -o afls: -l anonymous,fg,local,src: --name "$O" -- $@)"
 eval set -- "$params"
 
 SRC=$MY_PATH/dnsmasq
@@ -12,12 +12,17 @@ DOCKER_ARGS='-d'
 CMD=''
 USE_LOCALHOST=false
 LOCAL_ADDR='127.0.0.1'
+NAMED_CONTAINER=true
 
 while true
 do
     case "$1" in
         -f|--fg)
             DOCKER_ARGS='-ti --rm'
+            shift
+            ;;
+        -a|--anonymous)
+            NAMED_CONTAINER=false
             shift
             ;;
         -s|--src)
@@ -84,9 +89,13 @@ getCmd()
     if [ true == $USE_LOCALHOST ]; then
         DOCKER_ARGS="$DOCKER_ARGS -p 53:53/udp"
     fi
+    NAME_ARG=''
+    if [ true == $NAMED_CONTAINER ]; then
+        NAME_ARG="--name $DOCKER_CONTAINER_NAME"
+    fi
     CMD="docker run \
         $DOCKER_ARGS \
-        --name $DOCKER_CONTAINER_NAME \
+        $NAME_ARG \
         -v $SRC:/etc/dnsmasq \
         $DOCKER_IMAGE_NAME $1"
 }
