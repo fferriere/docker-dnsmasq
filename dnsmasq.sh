@@ -69,10 +69,17 @@ checkDirWritable()
 
 run()
 {
+    checkResolvConf
+    getCmd $1
+    eval $CMD
+}
+
+checkResolvConf()
+{
     checkDirExists $SRC
     CONF_FILE="$SRC/resolv.dnsmasq.conf"
-    DIST_FILE=$CONF_FILE'.dist'
     if [ ! -f $CONF_FILE ]; then
+        DIST_FILE=$CONF_FILE'.dist'
         if [ -f $DIST_FILE ]; then
             cp $DIST_FILE $CONF_FILE
         else
@@ -80,8 +87,6 @@ run()
             exit 3
         fi
     fi
-    getCmd $1
-    eval $CMD
 }
 
 getCmd()
@@ -137,6 +142,13 @@ updateResolv()
     if [ $? -eq 0 ]; then
         echo "nameserver $IP_ADDRESS" > /etc/resolv.conf
     fi
+    addSecondaryDns
+}
+
+addSecondaryDns()
+{
+    checkResolvConf
+    cat $CONF_FILE >> /etc/resolv.conf
 }
 
 reloadDnsmasq()
@@ -222,4 +234,4 @@ case "$1" in
         echo "Command not found"
         echoHelp
         ;;
-esac   
+esac
