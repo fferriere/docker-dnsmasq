@@ -18,7 +18,7 @@ while true
 do
     case "$1" in
         -f|--fg)
-            DOCKER_ARGS='-ti --rm'
+            DOCKER_ARGS='--rm'
             shift
             ;;
         -a|--anonymous)
