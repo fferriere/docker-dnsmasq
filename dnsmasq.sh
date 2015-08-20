@@ -16,6 +16,10 @@ params="$(getopt -o afls: -l anonymous,fg,local,src: --name "$O" -- $@)"
 eval set -- "$params"
 
 SRC=$APP_PATH/dnsmasq
+if [ -n "$FFERRIERE_DNSMASQ_CNF" ]; then
+    SRC="$FFERRIERE_DNSMASQ_CNF"
+fi
+
 DOCKER_ARGS='-d'
 CMD=''
 USE_LOCALHOST=false
@@ -184,6 +188,7 @@ echoHelp()
     echo "run.sh [CMD] [OPTIONS]"
     echo "      use FFERRIERE_DNSMASQ_IMAGE to customize container image's name"
     echo "      use FFERRIERE_DNSMASQ_NAME to customize container's name"
+    echo "      use FFERRIERE_DNSMASQ_CNF to customize dnsmasq configuration directory"
     echo "CMD: "
     echo "  build   to build container (you can use docker build options after --)"
     echo "  stop    to stop container"
@@ -196,7 +201,7 @@ echoHelp()
     echo "  run     to start the container"
     echo "    [OPTIONS]:"
     echo "      -f | --fg   to run container on foreground (default is deamon run)"
-    echo "      -s | --src  to give the dnsmasq folder link with /etc/dnsmasq on container"
+    echo "      -s | --src  to give the dnsmasq folder link with /etc/dnsmasq on container (this option override FFERRIERE_DNSMASQ_CNF)"
     echo "  dry-run generate the docker run command and show it"
     echo "  reload  to reload the dnsmasq configuration"
     echo "    you can use -s | --src option with this command as with run command"
