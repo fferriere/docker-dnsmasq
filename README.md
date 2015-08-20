@@ -2,6 +2,7 @@
 
 This project permit to use dnsmasq under a docker container.
 The dnsmasq configuration could be update after container.
+The container is base on [docker-base](https://github.com/fferriere/docker-base) container.
 
 ## Installation
 
@@ -53,3 +54,16 @@ CMD:
 ## Thanks
 
 Thanks to creator of dnsmasq and to Pascal Martin (@pmartin (on github) and @pascal_martin (on twitter)) with his [presentation](http://blog.pascal-martin.fr/public/slides-tea-dnsmasq/)
+
+## Magic examples
+
+```
+$ export FFERRIERE_DNSMASQ_IMAGE='my-company/dnsmasq-for-containers'
+$ ./dnsmasq.sh build # not run each time, only first time
+$ export FFERRIERE_DNSMASQ_NAME='my-company-dnsmasq-for-containers'
+$ export FFERRIERE_DNSMASQ_CNF='/path/of/config/for/containers'
+$ ./dnsmasq.sh run
+$ docker run --rm -ti --dns=$(docker inspect -f "{{.NetworkSettings.IPAddress}}" $FFERRIERE_DNSMASQ_NAME) fferriere/base /bin/bash
+```
+
+This example run a dnsmasq container with particular informations. Run a second container with dnsmasq IP on dns for the new container.
