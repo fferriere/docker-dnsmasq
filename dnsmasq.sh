@@ -1,13 +1,21 @@
 #!/bin/bash
 
-MY_PATH=$(dirname $(realpath $0))
+APP_PATH=$(dirname $(realpath $0))
 
-. $MY_PATH/docker-name.conf
+DOCKER_IMAGE_NAME='fferriere/dnsmasq'
+if [ -n "$FFERRIERE_DNSMASQ_IMAGE" ]; then
+    NAME="$FFERRIERE_DNSMASQ_IMAGE"
+fi
+
+DOCKER_CONTAINER_NAME='fferriere-dnsmasq'
+if [ -n "$FFERRIERE_DNSMASQ_NAME" ]; then
+    DOCKER_CONTAINER_NAME="$FFERRIERE_DNSMASQ_NAME"
+fi
 
 params="$(getopt -o afls: -l anonymous,fg,local,src: --name "$O" -- $@)"
 eval set -- "$params"
 
-SRC=$MY_PATH/dnsmasq
+SRC=$APP_PATH/dnsmasq
 DOCKER_ARGS='-d'
 CMD=''
 USE_LOCALHOST=false
@@ -48,7 +56,7 @@ errEcho()
 
 build()
 {
-    docker build -t $DOCKER_IMAGE_NAME $1 $MY_PATH/.
+    docker build -t $DOCKER_IMAGE_NAME $1 $APP_PATH/.
 }
 
 checkDirExists()
@@ -161,8 +169,8 @@ reloadDnsmasq()
 install()
 {
     build
-    ln -nfs $MY_PATH/scripts/ /usr/local/bin/docker-dnsmasq
-    cp $MY_PATH/files/docker-dnsmasq.service.systemd /usr/lib/systemd/system/docker-dnsmasq.service
+    ln -nfs $APP_PATH/scripts/ /usr/local/bin/docker-dnsmasq
+    cp $APP_PATH/files/docker-dnsmasq.service.systemd /usr/lib/systemd/system/docker-dnsmasq.service
 }
 
 uninstall()
