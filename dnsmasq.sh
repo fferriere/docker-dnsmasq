@@ -182,6 +182,8 @@ uninstall()
 echoHelp()
 {
     echo "run.sh [CMD] [OPTIONS]"
+    echo "      use FFERRIERE_DNSMASQ_IMAGE to customize container image's name"
+    echo "      use FFERRIERE_DNSMASQ_NAME to customize container's name"
     echo "CMD: "
     echo "  build   to build container (you can use docker build options after --)"
     echo "  stop    to stop container"
