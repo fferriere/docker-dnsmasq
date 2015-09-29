@@ -195,6 +195,7 @@ echoHelp()
     echo "  rm      to remove container"
     echo "  stop-rm to stop and remove contaier"
     echo "  resolv  to modify resolv.conf file with ip address of dnsmasq container"
+    echo "  reload  to reload dnsmasq configuration"
     echo "  help    to show this message"
     echo "  install to install container at boot with systemd, you must to run this command with root or with sudo"
     echo "  uninstall to uninstall container at boot, you must to run this command with root or sudo"
