@@ -110,6 +110,7 @@ getCmd()
     if [ true == $NAMED_CONTAINER ]; then
         NAME_ARG="--name $DOCKER_CONTAINER_NAME"
     fi
+
     CMD="docker run \
         $DOCKER_ARGS \
         $NAME_ARG \
@@ -123,9 +124,25 @@ dryRun()
     echo $CMD
 }
 
+runOneTime()
+{
+    getNbContainerRun
+    if [ "$nbContainer" -eq 0 ]; then
+        removeContainer
+        run "$@"
+    else
+        echo 'Dnsmasq already run'
+    fi
+}
+
 getNbContainer()
 {
     nbContainer=$(docker ps -a | grep $DOCKER_CONTAINER_NAME | wc -l)
+}
+
+getNbContainerRun()
+{
+    nbContainer=$(docker ps | grep $DOCKER_CONTAINER_NAME | wc -l)
 }
 
 stopContainer()
@@ -200,6 +217,7 @@ echoHelp()
     echo "  install to install container at boot with systemd, you must to run this command with root or with sudo"
     echo "  uninstall to uninstall container at boot, you must to run this command with root or sudo"
     echo "  run     to start the container"
+    echo "  run-one-time to run container only if not already running"
     echo "    [OPTIONS]:"
     echo "      -f | --fg   to run container on foreground (default is deamon run)"
     echo "      -s | --src  to give the dnsmasq folder link with /etc/dnsmasq on container (this option override FFERRIERE_DNSMASQ_CNF)"
@@ -216,6 +234,10 @@ case "$1" in
     run)
         shift
         run "$@"
+        ;;
+    run-one-time)
+        shift
+        runOneTime "$@"
         ;;
     stop)
         stopContainer
